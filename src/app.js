@@ -1,19 +1,21 @@
 const express = require("express");
 const app = express(); // create an express application or server
-const {adminAuth,userAuth} = require("./middlewares/auth");
- app.use("/admin",adminAuth)
-//  app.use("/user",userAuth)
 
-app.get("/user/profile",userAuth, (req, res) => {
-  res.send("Authorized Access Granted");
+
+app.get("/getUserData", (req, res) => {
+    try {
+        res.send("user data!");
+    } catch (error) {
+        res.status(500).send("Internal Server Error");
+    }
+  
 });
 
-app.get("/admin/getAllData", (req, res) => {
-  res.send("Authorized Access Granted");
-});
-
-app.delete("/admin/delete", (req, res) => {
-  res.send("Authorized Delete Access Granted");
+// use at end of all routes
+app.use("/", (err, req, res, next) => {
+  if (err) {
+    return res.status(500).send("Internal Server Error");
+  }
 });
 
 app.listen(3000, () => {
