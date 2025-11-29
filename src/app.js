@@ -58,20 +58,34 @@ app.get("/userbyid", async (req, res) => {
 });
 
 // update user by id
-app.patch("/updateuser", async (req, res) => {
+app.patch("/updateuser/:id", async (req, res) => {
   const data = req.body;
+  const id = req.params.id;
   console.log(data);
   try {
-    const updateUser = await UserModel.findByIdAndUpdate(
-      data.id,  
-      data
-      //   {
-      //     firstName: data.firstName,
-      //     emailId: data.emailId,
-      //     age: data.age,
-      //     gender: data.gender,
-      //   },
+    const ALLOWED_UPDATES = [
+      "firstName",
+      "lastName",
+      "password",
+      "age",
+      "gender",
+      "photoUrl",
+      "about",
+      "skills",
+    ];
+
+    const isUpdateAllowed = Object.keys(data).every((key) =>
+      ALLOWED_UPDATES.includes(key)
     );
+    if(!isUpdateAllowed){
+        throw new Error("Invalid updates!");
+    }
+    if(data.skills && data.skills.length>3){
+        throw new Error("Skills should not be more than 3");
+    }
+    const updateUser = await UserModel.findByIdAndUpdate(id, data, {
+      runValidators: true,
+    });
     res.send("User updated successfully: " + updateUser);
   } catch (error) {
     res.status(404).send("Error updating user :" + error.message);
