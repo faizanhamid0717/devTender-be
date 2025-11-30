@@ -6,7 +6,7 @@ const validateSignUpData = (req) => {
   if (!validator.isEmail(emailId)) {
     throw new Error("Email is not valid");
   } else if (!validator.isStrongPassword(password)) {
-    throw new Error("Password must be at least 6 characters long");
+    throw new Error("Error :" + error.message);
   }
 };
 

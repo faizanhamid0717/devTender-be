@@ -38,3 +38,32 @@ NEVER TRUST REQ.BODY // ATTACKER CAN SEND ANY VIRUS DATA INTO REQ.BODY DATABASE
 1. store user in DB
    bcrypt.hash(password,salt round ) use as 10 good number
    bcrypt.compare(password,hashpassword from db)
+
+1. 🔥🔥🔥🔥🔥🔥 Episode 2.10 🔥🔥🔥🔥🔥
+   JWT, Authantication, cookies , cookies parser, validate user , Auth middleware
+   -- on every any api call server need to verify the user using token
+   -- when we login once it verify email pass, the server send jwt token and user save it in browser and when user hit any api it send the jwt token back to server and it verify it and give responce
+
+--COOKIES :- when we login in the server send responce and rape jwt token inside cookies and send to user and brower store that cookies
+
+-- we can also maintain expire date for this cookies
+-- express give use the method to store this cookie res.cookie(name, value [, options]) , https://expressjs.com/en/5x/api.html#res.cookie
+
+-- for reading this cookie once get this through APIs we use npm i cookie-parser , cookies parser middleware app.use(cookieParser())
+
+-- jwt json web token https://www.jwt.io/
+tokon devided into 3 things in 3 different color , Header , Payload ,Signiture we can check in jwt.io
+-- for creating jwt token we use npm package json web token npm i jsonwebtoken
+-- jwt.sign({\_id:user.\_id}) we are use id here so whe we generate token this user id is gets hidden save in that token
+-- const decoded = jwt.verify(token,"DEVT_INDER_SECRET_KEY"); we can then verify our token in all APIs so inside this decoded i will get the id like this { decoded: { \_id: '692bbae5bfe8762753c3f82e', iat: 1764478147 } }
+
+-- doing all above steps for all APIs in eacj API saperately is not good so we creat a middleware called Auth middleware
+-- we can verify token in this middle ware and use next , this next will call this async after present userAuth middleware
+app.get("/profile", userAuth, async (req, res) => {
+try {
+const user = req.user; // user is check in the auth middleware so we right like this
+res.send(user);
+} catch (error) {
+res.status(401).send("Unauthorized: Invalid token");
+}
+});

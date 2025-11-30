@@ -4,12 +4,16 @@ const UserModel = require("./models/userSchema");
 const { validateSignUpData } = require("./utils/validation");
 const app = express(); // create an express application or server
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
+const { userAuth } = require("./middlewares/auth");
+
 app.use(express.json()); // Middleware to parse JSON request bodies
+app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
   try {
     validateSignUpData(req);
-
     const {
       firstName,
       lastName,
@@ -21,7 +25,6 @@ app.post("/signup", async (req, res) => {
       skills,
     } = req.body;
     const passwordHash = await bcrypt.hash(password, 10);
-    console.log({ passwordHash });
     const User = new UserModel({
       firstName,
       lastName,
@@ -40,25 +43,40 @@ app.post("/signup", async (req, res) => {
 });
 
 // login user
-app.post("/login",async(req,res)=>{
+app.post("/login", async (req, res) => {
   try {
-    const {emailId,password}=req.body;
-     const user = await UserModel.findOne({ emailId });
-     if (!user) {
-       return res.status(404).send("invalid credentials");
-     }
-     const isPasswordValid = await bcrypt.compare(password,user.password);
-      if (!isPasswordValid) {
-        return res.status(400).send("Invalid credentials");
-      }
-      res.send("Login successful");
+    const { emailId, password } = req.body;
+    const user = await UserModel.findOne({ emailId: emailId });
+    if (!user) {
+      throw new Error("invalid credentials");
+    }
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+     throw new Error("Invalid credentials");
+    }
+    // generate jwt token here and add it to cookie and send response to user
+    const token = await jwt.sign({ _id: user._id }, "DEVT_INDER_SECRET_KEY");
+    res.cookie("token", token);
+    res.send("Login successful");
   } catch (error) {
     res.status(400).send("Error logging in user :" + error.message);
   }
-})
+});
+
+// get user profile
+app.get("/profile", userAuth, async (req, res) => {
+  try {
+    const user = req.user; //  user is set in the auth middleware\
+    console.log({req_user:req});
+    res.send(user);
+  } catch (error) {
+    res.status(401).send("Unauthorized: Invalid token");
+  }
+});
 
 // get all users
-app.get("/feed", async (req, res) => {
+app.get("/feed", userAuth, async (req, res) => {
   try {
     const users = await UserModel.find({});
     res.send(users);
@@ -101,7 +119,6 @@ app.get("/userbyid", async (req, res) => {
 app.patch("/updateuser/:id", async (req, res) => {
   const data = req.body;
   const id = req.params.id;
-  console.log(data);
   try {
     const ALLOWED_UPDATES = [
       "firstName",
