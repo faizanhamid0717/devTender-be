@@ -19,8 +19,9 @@ const userAuth = async (req, res, next) => {
     req.user = user; // attach user to request object
     next();
   } catch (error) {
-    res.status(401).send("Unauthorized: Invalid token", +error.message);
+    res.status(401).send("Unauthorized: Invalid token", + error.message);
   }
 };
 
 module.exports = { userAuth };
+

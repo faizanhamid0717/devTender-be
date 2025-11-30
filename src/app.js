@@ -50,14 +50,14 @@ app.post("/login", async (req, res) => {
     if (!user) {
       throw new Error("invalid credentials");
     }
-    const isPasswordValid = await bcrypt.compare(password, user.password);
+    const isPasswordValid = await user.validatePassword(password);
 
     if (!isPasswordValid) {
-     throw new Error("Invalid credentials");
+      throw new Error("Invalid credentials");
     }
-    // generate jwt token here and add it to cookie and send response to user
-    const token = await jwt.sign({ _id: user._id }, "DEVT_INDER_SECRET_KEY");
-    res.cookie("token", token);
+    // generate jwt token here inside schema file using schema method and add it to cookie and send response to user
+    const token = await user.generateJWT();
+    res.cookie("token", token,{expires:new Date(Date.now()+86400000),httpOnly:true});
     res.send("Login successful");
   } catch (error) {
     res.status(400).send("Error logging in user :" + error.message);
@@ -68,101 +68,13 @@ app.post("/login", async (req, res) => {
 app.get("/profile", userAuth, async (req, res) => {
   try {
     const user = req.user; //  user is set in the auth middleware\
-    console.log({req_user:req});
+
     res.send(user);
   } catch (error) {
-    res.status(401).send("Unauthorized: Invalid token");
+     res.status(401).send("Unauthorized: Invalid token");
   }
 });
 
-// get all users
-app.get("/feed", userAuth, async (req, res) => {
-  try {
-    const users = await UserModel.find({});
-    res.send(users);
-  } catch (error) {
-    res.status(404).send("Error fetching users :" + error.message);
-  }
-});
-
-// get one user
-app.get("/user", async (req, res) => {
-  const userAge = req.body.age;
-  try {
-    const User = await UserModel.findOne({ age: userAge });
-    if (!User) {
-      res.status(404).send("User not found");
-    } else {
-      res.send(User);
-    }
-  } catch (error) {
-    res.status(404).send("Error fetching user :" + error.message);
-  }
-});
-
-// get user by id
-app.get("/userbyid", async (req, res) => {
-  const ID = req.body.id;
-  try {
-    const UserId = await UserModel.findById({ _id: ID });
-    if (!UserId) {
-      res.status(404).send("User not found");
-    } else {
-      res.send(UserId);
-    }
-  } catch (error) {
-    res.status(404).send("Error fetching user by ID :" + error.message);
-  }
-});
-
-// update user by id
-app.patch("/updateuser/:id", async (req, res) => {
-  const data = req.body;
-  const id = req.params.id;
-  try {
-    const ALLOWED_UPDATES = [
-      "firstName",
-      "lastName",
-      "password",
-      "age",
-      "gender",
-      "photoUrl",
-      "about",
-      "skills",
-    ];
-
-    const isUpdateAllowed = Object.keys(data).every((key) =>
-      ALLOWED_UPDATES.includes(key)
-    );
-    if (!isUpdateAllowed) {
-      throw new Error("Invalid updates!");
-    }
-    if (data.skills && data.skills.length > 3) {
-      throw new Error("Skills should not be more than 3");
-    }
-    const updateUser = await UserModel.findByIdAndUpdate(id, data, {
-      runValidators: true,
-    });
-    res.send("User updated successfully: " + updateUser);
-  } catch (error) {
-    res.status(404).send("Error updating user :" + error.message);
-  }
-});
-
-// deleyte user by id
-app.delete("/deleteuser", async (req, res) => {
-  const ID = req.body.id;
-  try {
-    const data = await UserModel.findByIdAndDelete(ID);
-    if (!data) {
-      res.status(404).send("User not found");
-    } else {
-      res.send("User deleted successfully");
-    }
-  } catch (error) {
-    res.status(404).send("Error deleting user :" + error.message);
-  }
-});
 // Start the server after connecting to the database
 connectToDatabase()
   .then(() => {

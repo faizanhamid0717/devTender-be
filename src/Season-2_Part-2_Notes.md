@@ -67,3 +67,12 @@ res.send(user);
 res.status(401).send("Unauthorized: Invalid token");
 }
 });
+
+-- expire jwt expiresIn: "1d",
+-- expire cookie {expires:new Date(Date.now()+86400000),httpOnly:true}
+
+--MONGOOSE SCHEMA METHODS--
+insted of creating token directly inside login api we ceate into schema method inside schema file use userSchema.methods
+and we dont use arrow function because this key word has different behavoiur with arrow function it will not work
+
+-- we can also saperate validate function to bcrypt inside schema insted of doing inside login directly
