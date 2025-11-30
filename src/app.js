@@ -1,21 +1,61 @@
 const express = require("express");
 const { connectToDatabase } = require("./config/database");
 const UserModel = require("./models/userSchema");
+const { validateSignUpData } = require("./utils/validation");
 const app = express(); // create an express application or server
-
+const bcrypt = require("bcrypt");
 app.use(express.json()); // Middleware to parse JSON request bodies
 
 app.post("/signup", async (req, res) => {
-  const userData = req.body;
-  const User = new UserModel(userData);
-
   try {
+    validateSignUpData(req);
+
+    const {
+      firstName,
+      lastName,
+      emailId,
+      password,
+      age,
+      gender,
+      about,
+      skills,
+    } = req.body;
+    const passwordHash = await bcrypt.hash(password, 10);
+    console.log({ passwordHash });
+    const User = new UserModel({
+      firstName,
+      lastName,
+      emailId,
+      password: passwordHash,
+      age,
+      gender,
+      about,
+      skills,
+    });
     await User.save();
     res.status(201).send("User signed up successfully");
   } catch (error) {
     res.status(400).send("Error signing up user :" + error.message);
   }
 });
+
+// login user
+app.post("/login",async(req,res)=>{
+  try {
+    const {emailId,password}=req.body;
+     const user = await UserModel.findOne({ emailId });
+     if (!user) {
+       return res.status(404).send("invalid credentials");
+     }
+     const isPasswordValid = await bcrypt.compare(password,user.password);
+      if (!isPasswordValid) {
+        return res.status(400).send("Invalid credentials");
+      }
+      res.send("Login successful");
+  } catch (error) {
+    res.status(400).send("Error logging in user :" + error.message);
+  }
+})
 
 // get all users
 app.get("/feed", async (req, res) => {
@@ -77,11 +117,11 @@ app.patch("/updateuser/:id", async (req, res) => {
     const isUpdateAllowed = Object.keys(data).every((key) =>
       ALLOWED_UPDATES.includes(key)
     );
-    if(!isUpdateAllowed){
-        throw new Error("Invalid updates!");
+    if (!isUpdateAllowed) {
+      throw new Error("Invalid updates!");
     }
-    if(data.skills && data.skills.length>3){
-        throw new Error("Skills should not be more than 3");
+    if (data.skills && data.skills.length > 3) {
+      throw new Error("Skills should not be more than 3");
     }
     const updateUser = await UserModel.findByIdAndUpdate(id, data, {
       runValidators: true,

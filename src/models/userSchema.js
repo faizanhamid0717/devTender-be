@@ -19,11 +19,11 @@ const userSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
-      validate(value) {
-        if (!validator.isStrongPassword(value)) {
-          throw new Error("Password must be at least 6 characters long");
-        }
-      },
+      // validate(value) {
+      //   if (!validator.isStrongPassword(value)) {
+      //     throw new Error("Password must be at least 6 characters long");
+      //   }
+      // },
     },
     age: { type: Number, min: 18 },
     gender: {
@@ -49,5 +49,6 @@ const userSchema = new mongoose.Schema(
 );
 
 const UserModel = mongoose.model("User", userSchema);
+
 
 module.exports = UserModel;
