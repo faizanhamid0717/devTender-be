@@ -3,7 +3,7 @@
 // find the user
 const jwt = require("jsonwebtoken");
 const UserModel = require("../models/userSchema");
-const userAuth = async (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   try {
     const cookies = req.cookies;
     const { token } = cookies;
@@ -23,5 +23,5 @@ const userAuth = async (req, res, next) => {
   }
 };
 
-module.exports = { userAuth };
+module.exports = { authMiddleware };
 

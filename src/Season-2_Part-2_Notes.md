@@ -76,3 +76,20 @@ insted of creating token directly inside login api we ceate into schema method i
 and we dont use arrow function because this key word has different behavoiur with arrow function it will not work
 
 -- we can also saperate validate function to bcrypt inside schema insted of doing inside login directly
+
+4. 🔥🔥🔥🔥🔥🔥 Episode 2.11 🔥🔥🔥🔥🔥
+   craeting Apis of dev tinder
+   insted of wright all APIs inside app.js, we use exprss.router in sapearte files just group related APIs inside one route
+
+// now we create saperate folder of router then inside that create our roter files -- earlier we are wrighting APIs inside app.js using app.use() similarly we wright same way but just change aap.use() to authRouter.use()
+
+and we call inside app.js
+// Use the routers
+app.use("/", authRouter);
+app.use("/", profileRouter);
+app.use("/", requestRouter);
+
+when any api call happen it gets the route and it goes one by one in this route if it find the routr we are send the resuest from that api so then it will not move to next route
+
+// -- Logout work---
+we know user login using token and cookie , we can simpley send cookies token as null and expire it right there so if user dont have cookies token he can not able to access any api
