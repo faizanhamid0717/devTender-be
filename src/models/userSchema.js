@@ -30,11 +30,15 @@ const userSchema = new mongoose.Schema(
     age: { type: Number, min: 18 },
     gender: {
       type: String,
-      validate(value) {
-        if (!["male", "female", "other"].includes(value)) {
-          throw new Error("Gender is not valid");
-        }
+      enum: {
+        values: ["male", "female", "other"],
+        message: "{VALUE} is not supported",
       },
+      // validate(value) {
+      //   if (!["male", "female", "other"].includes(value)) {
+      //     throw new Error("Gender is not valid");
+      //   }
+      // },
     },
     photoUrl: {
       type: String,
@@ -57,11 +61,14 @@ userSchema.methods.generateJWT = async function () {
   return token;
 };
 
-userSchema.methods.validatePassword = async function(passwordInputByUser) {
- const hashPaswordFromDB=this.password;
-  const isPasswordValid = await bcrypt.compare(passwordInputByUser, hashPaswordFromDB);
+userSchema.methods.validatePassword = async function (passwordInputByUser) {
+  const hashPaswordFromDB = this.password;
+  const isPasswordValid = await bcrypt.compare(
+    passwordInputByUser,
+    hashPaswordFromDB
+  );
   return isPasswordValid;
-}
+};
 
 const UserModel = mongoose.model("User", userSchema);
 

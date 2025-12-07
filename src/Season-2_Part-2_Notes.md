@@ -93,3 +93,25 @@ when any api call happen it gets the route and it goes one by one in this route 
 
 // -- Logout work---
 we know user login using token and cookie , we can simpley send cookies token as null and expire it right there so if user dont have cookies token he can not able to access any api
+
+5. 🔥🔥🔥🔥🔥🔥 Episode 2.12 🔥🔥🔥🔥🔥
+   //APi connection between 2 user
+   -- created schema connectionRequest
+   -- how to set index in db
+   we can set any thing as index in DB so that when we use that to find we can get data very fast other wise it takes time based on how much data is available
+   eg. in user schema up put email as index because in login we use email to find so if teher are millions no of emails it takes huge time to find
+   // -- we can set multple as index -- https://mongoosejs.com/docs/api/schema.html , https://www.mongodb.com/docs/manual/core/indexes/index-types/index-compound/
+   -- and we can create all fileds as index becasuse DB has to do lot of things it become toughf for DB to work
+   -- compound index
+
+6. 🔥🔥🔥🔥🔥🔥 Episode 2.13 🔥🔥🔥🔥🔥
+   Api review/accepting
+   -- how to make relation between apis
+   -- when we use this API to get the connection request or friend request userRouter.get("/user/requests/received", we get the data all in array but i get the id fromUserId of user who send me the friendRequest so , so i have to do on by one to find from user by that id and get the user, this is not the good ways so we will MAKE A RELATION BETWEEN THESE 2 SCHEMAS , BY CREATING A REFRENCE IN CONNECTIONREQUEST SCHEMA
+
+-- mongoDB url for queries https://www.mongodb.com/docs/manual/crud/
+
+7. 🔥🔥🔥🔥🔥🔥 Episode 2.14 🔥🔥🔥🔥🔥
+   // Feed Api get data of users and accept and reject
+   // adding pagination in api because it is big api other wise we get alldata in once
+   // im mongoDB we have 2 functions .skip() and .limit()

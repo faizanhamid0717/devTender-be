@@ -14,10 +14,15 @@
 
 ## connectionRequestRouter
 
+// making API dynamic because just status is getting changes
+
 - POST / request/send/intrested/:userId
 - POST /request/send/ignore/:userId
+- - - POST /request/send/:status/:userId
+
 - POSt /request/review/accepted/:requestId
 - POSt /request/review/rejected/:requestId
+- - - POST /request/review/:status/:userId
 
 ## userRouter
 

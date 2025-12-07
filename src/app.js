@@ -6,12 +6,14 @@ app.use(express.json()); // Middleware to parse JSON request bodies
 app.use(cookieParser());
 const authRouter = require("./routes/authRoute");
 const profileRouter = require("./routes/profileRoute");
-const requestRouter = require("./routes/requestRoute"); 
+const requestRouter = require("./routes/requestRoute");
+const userRouter = require("./routes/userRoute");
 
 // Use the routers
 app.use("/", authRouter);
 app.use("/", profileRouter);
 app.use("/", requestRouter);
+app.use("/", userRouter);
 // Start the server after connecting to the database
 connectToDatabase()
   .then(() => {
