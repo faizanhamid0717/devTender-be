@@ -55,7 +55,7 @@ const userSchema = new mongoose.Schema(
 );
 
 userSchema.methods.generateJWT = async function () {
-  const token = await jwt.sign({ _id: this._id }, "DEVT_INDER_SECRET_KEY", {
+  const token = await jwt.sign({ _id: this._id }, process.env.JWT_SECRET_KEY, {
     expiresIn: "1d",
   });
   return token;

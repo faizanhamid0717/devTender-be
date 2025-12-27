@@ -21,6 +21,24 @@ nd put this in root of app require('dotenv').config()
 1. pushing mongoUrl on github - wrong
 2. jwt secret key
 
+// 🌴 Manage Multiple Environments
+means test, dev , stage , production read .env documentation
+https://www.npmjs.com/package/dotenv
+
+🔥🔥🔥🔥🔥🔥 Episode 3.6 🔥🔥🔥🔥  
+ scheduling task - means
+CRON JOBS - means scheduling some thing it should happen every hour / means some thing that should be trigger at there respected tiem eg sending email
+
+use cronjob package npm install node-cron
+https://www.npmjs.com/package/node-cron
+documentation
+
+- for practise cron jon stars we this website https://crontab.guru/
+
+- for date calculation use moment.js package or date-fns package
+
+-- for sending emails for huge data directly is not good we can use package called as BEEQUEUE
+
 🔥🔥🔥🔥🔥🔥 Episode 3.7 🔥🔥🔥🔥🔥
 
 RAZORPAY PAYMENT GATEWAY INTEGRATION

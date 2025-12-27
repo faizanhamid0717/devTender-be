@@ -44,9 +44,9 @@ const createSendEmailCommand = (toAddress, fromAddress, subject, body) => {
 
 // both emails should be verified in aws ses
 // we trigger this run on when we send request or intrested to user
-const run = async (subject, body) => {
+const run = async (subject, body, email) => {
   const sendEmailCommand = createSendEmailCommand(
-    "receiver@example.com",
+    "receiver@example.com", // replace email make it dynamic
     "sender@example.com",
     subject,
     body

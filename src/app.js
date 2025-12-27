@@ -18,6 +18,7 @@ app.use(
   })
 );
 
+require("./utils/cronJobs");
 // Use the routers
 app.use("/", authRouter);
 app.use("/", profileRouter);
