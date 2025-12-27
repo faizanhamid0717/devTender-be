@@ -49,7 +49,7 @@ paymentRouter.post("/payment/create", authMiddleware, async (req, res) => {
 // this api call gets by razorpay on success or failure payment while create webhook on razorpay app we put this api there
 paymentRouter.post("/payment/webhook", async (req, res) => {
   try {
-    const webhookSignature = req.headers["X-Razorpay-Signature"];
+    const webhookSignature = req.headers("X-Razorpay-Signature");
     const isWebhookValid = validateWebhookSignature(
       JSON.stringfy(req.body),
       webhookSignature,
