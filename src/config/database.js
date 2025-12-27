@@ -1,9 +1,9 @@
 const mongoose = require("mongoose");
+// require("dotenv").config();
 
 const connectToDatabase = async () => {
-  await mongoose.connect(
-    "mongodb+srv://Faizan:devtinder@devtindercluster.pfs6tg7.mongodb.net/devtinder"
-  );
+  console.log(process.env.MONGO_URL);
+  await mongoose.connect(process.env.MONGO_URL);
 };
 
 module.exports = { connectToDatabase }; // Clear existing models to prevent OverwriteModelError

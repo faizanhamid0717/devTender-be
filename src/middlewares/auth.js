@@ -8,14 +8,15 @@ const authMiddleware = async (req, res, next) => {
     const cookies = req.cookies || {};
     const { token } = cookies;
     if (!token) {
-      return res.status(401).send("Unauthorized: No token provided");
+      return res.status(401).send("Please login");
     }
-    const decodedObj = await jwt.verify(token, "DEVT_INDER_SECRET_KEY");
+    const decodedObj = await jwt.verify(token, process.env.JWT_SECRET_KEY);
     const { _id } = decodedObj;
     const user = await UserModel.findById(_id);
     if (!user) {
       return res.status(401).send("Unauthorized: User not found");
     }
+
     req.user = user; // attach user to request object
     if (typeof next !== "function") {
       console.error("authMiddleware: 'next' is not a function", typeof next);

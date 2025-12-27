@@ -13,23 +13,18 @@ profileRouter.get("/profile/view", authMiddleware, async (req, res) => {
   }
 });
 
-profileRouter.patch(
-  "/profile/edit",
-  authMiddleware,
-  async (req, res) => {
-    try {
-      validateProfileData(req);
-      const loggedInUser = req.user;
-      Object.keys(req.body).forEach((key)=>{
-        loggedInUser[key]=req.body[key]
-      })  
-      await loggedInUser.save();
-      res.send({ message: "Profile updated successfully", user: loggedInUser})
-   
-    } catch (error) {
-      res.status(400).send("Error updating profile :" + error.message);
-    }
+profileRouter.patch("/profile/edit", authMiddleware, async (req, res) => {
+  try {
+    validateProfileData(req);
+    const loggedInUser = req.user;
+    Object.keys(req.body).forEach((key) => {
+      loggedInUser[key] = req.body[key];
+    });
+    await loggedInUser.save();
+    res.send({ message: "Profile updated successfully", user: loggedInUser });
+  } catch (error) {
+    res.status(400).send("Error updating profile :" + error.message);
   }
-);
+});
 
 module.exports = profileRouter;

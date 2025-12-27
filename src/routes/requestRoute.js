@@ -3,6 +3,7 @@ const requestRouter = express.Router();
 const { authMiddleware } = require("../middlewares/auth");
 const connectionRequestModel = require("../models/connectionRequestSchema");
 const UserModel = require("../models/userSchema");
+const sendEmail = require("../utils/sendEmails");
 requestRouter.post(
   "/request/send/:status/:toUserId",
   authMiddleware,
@@ -41,6 +42,9 @@ requestRouter.post(
         status,
       });
       const data = await connectionRequest.save();
+      // const emailResponse = await sendEmail.run();/ make it dynamic by props
+      const emailResponse = await sendEmail.run("subject", "body");
+      console.log({ emailResponse });
       res.json({
         message: `Request ${status} sent successfully`,
         data: data,

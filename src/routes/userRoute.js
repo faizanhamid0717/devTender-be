@@ -1,6 +1,7 @@
 const express = require("express");
 const { authMiddleware } = require("../middlewares/auth");
 const ConnectionRequestModel = require("../models/connectionRequestSchema");
+const UserModel = require("../models/userSchema");
 const userRouter = express.Router();
 
 // Get all the pending requests for the logged-in user
@@ -10,7 +11,14 @@ userRouter.get("/user/requests/received", authMiddleware, async (req, res) => {
     const connectionRequests = await ConnectionRequestModel.find({
       toUserId: loggedInUser._id,
       status: "intrested", // other wise we get all requests
-    }).populate("fromUserId", ["firstName", "lastName", "age"]); // populate fromUserId to get user details
+    }).populate("fromUserId", [
+      "firstName",
+      "lastName",
+      "age",
+      "gender",
+      "photoUrl",
+      "about",
+    ]); // populate fromUserId to get user details
     res.json({
       message: "Pending requests fetched successfully",
       data: connectionRequests,
@@ -31,8 +39,22 @@ userRouter.get("/user/connections", authMiddleware, async (req, res) => {
         { fromUserId: loggedInUser._id, status: "accepted" },
       ],
     })
-      .populate("fromUserId", ["firstName", "lastName"])
-      .populate("toUserId", ["firstName", "lastName"]); // populate both fromUserId and toUserId to get user details
+      .populate("fromUserId", [
+        "firstName",
+        "lastName",
+        "age",
+        "gender",
+        "photoUrl",
+        "about",
+      ])
+      .populate("toUserId", [
+        "firstName",
+        "lastName",
+        "age",
+        "gender",
+        "photoUrl",
+        "about",
+      ]); // populate both fromUserId and toUserId to get user details
     // Using map to extract only the connected user details from the connections not the entire connection request document
     // actually id in Db is in this format ObjectId("60c72b2f9b1d8c001c8e4f3a")
     // so we need to convert it to string to compare using toString()
@@ -82,12 +104,12 @@ userRouter.get("/feed", authMiddleware, async (req, res) => {
     });
 
     const finalUsers = await UserModel.find({
-      $and: {
-        _id: { $ne: loggedInUser._id }, // remove himself
-        _id: { $nin: Array.from(hideUsersFromFeed) },
-      }, // convert set to array
+      $and: [
+        { _id: { $ne: loggedInUser._id } },
+        { _id: { $nin: Array.from(hideUsersFromFeed) } },
+      ], // convert set to array
     })
-      .select("firstName last age about skills")
+      .select("firstName lastName age gender about skills photoUrl")
       .skip(skip)
       .limit(limit);
     res.json({
@@ -95,6 +117,6 @@ userRouter.get("/feed", authMiddleware, async (req, res) => {
       data: finalUsers,
     });
   } catch (error) {
-    res.status(400).send({ message: error.message });
+    res.status(400).send({ "message:-": error.message });
   }
 });
