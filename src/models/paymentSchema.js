@@ -2,10 +2,10 @@ const mongoose = require("mongoose");
 
 const paymentSchema = new mongoose.Schema(
   {
-    userId: {
-      type: mongoose.Type.ObjectId,
-      ref: "User",
-    },
+    // userId: {
+    //   type: mongoose.Schema.Type.ObjectId,
+    //   ref: "User",
+    // },
     paymentId: { type: String },
     orderId: { type: String, required: true },
     status: { type: String, required: true },

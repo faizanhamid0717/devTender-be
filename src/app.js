@@ -9,6 +9,11 @@ const profileRouter = require("./routes/profileRoute");
 const requestRouter = require("./routes/requestRoute");
 const userRouter = require("./routes/userRoute");
 const paymentRouter = require("./routes/paymentRoute");
+const chatRouter = require("./routes/chatRoute");
+
+const http = require("http");
+const initializeSocket = require("./utils/sockit");
+
 require("dotenv").config();
 const cors = require("cors");
 app.use(
@@ -25,12 +30,16 @@ app.use("/", profileRouter);
 app.use("/", requestRouter);
 app.use("/", userRouter);
 app.use("/", paymentRouter);
+app.use("/", chatRouter);
 
 // Start the server after connecting to the database
+
+const server = http.createServer(app);
+initializeSocket(server);
 connectToDatabase()
   .then(() => {
     console.log("Connected to the database successfully");
-    app.listen(process.env.port, () => {
+    server.listen(process.env.port, () => {
       console.log("Server is running on port 3000");
     });
   })

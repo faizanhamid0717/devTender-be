@@ -44,3 +44,12 @@ documentation
 RAZORPAY PAYMENT GATEWAY INTEGRATION
 install razorpay
 https://razorpay.com/docs/payments/server-integration/nodejs/integration-steps
+
+🔥🔥🔥🔥🔥🔥 Episode 3.8 🔥🔥🔥🔥🔥
+CHAT SYSTEM -using sockit.io and websockit
+
+- check Auth documentation we use can auth also for more security and good way
+  https://socket.io/docs/v4/client-options/#auth
+
+🔥🔥🔥🔥🔥🔥 Episode 3.9 🔥🔥🔥🔥🔥
+How to save chat in DB
